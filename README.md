@@ -1,6 +1,6 @@
 # Video Poker Teacher
 
-## Dueces Wild Video Poker Strategy
+## Deuces Wild Video Poker Strategy
 
 ### Holding 4 Deuces
 
