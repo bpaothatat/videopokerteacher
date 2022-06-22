@@ -22,7 +22,7 @@ class Rank(Enum):
     QUEEN = 12
     KING = 13
 
-@dataclass
+@dataclass(frozen=True)
 class Card:
     suit: Suit
     rank: Rank
