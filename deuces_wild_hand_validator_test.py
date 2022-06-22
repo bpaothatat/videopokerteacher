@@ -1,5 +1,5 @@
 from cards import Card, Suit, Rank
-from deuces_wild_hand_validator import deuce_flush, straight
+from deuces_wild_hand_validator import *
 
 import unittest
 
@@ -34,6 +34,71 @@ class DeucesWildTest(unittest.TestCase):
         #Non stright
         non_straight = [Card(Suit.DIAMOND, Rank.ACE), Card(Suit.CLUB, Rank.TWO), Card(Suit.CLUB, Rank.THREE), Card(Suit.CLUB, Rank.SIX), Card(Suit.CLUB, Rank.FIVE)]
         self.assertFalse(straight(non_straight))
+
+    def test_pair(self):
+        #Pair with twos
+        pair_with_twos = [Card(Suit.DIAMOND, Rank.ACE), Card(Suit.CLUB, Rank.TWO), Card(Suit.CLUB, Rank.THREE), Card(Suit.CLUB, Rank.SIX), Card(Suit.CLUB, Rank.FIVE)]
+        self.assertTrue(pair(pair_with_twos))
+
+        #Pair with no twos
+        pair_with_no_twos = [Card(Suit.DIAMOND, Rank.ACE), Card(Suit.CLUB, Rank.ACE), Card(Suit.CLUB, Rank.THREE), Card(Suit.CLUB, Rank.SIX), Card(Suit.CLUB, Rank.FIVE)]
+        self.assertTrue(pair(pair_with_no_twos))
+
+        #Non pair
+        non_pair = [Card(Suit.DIAMOND, Rank.ACE), Card(Suit.CLUB, Rank.FOUR), Card(Suit.CLUB, Rank.THREE), Card(Suit.CLUB, Rank.SIX), Card(Suit.CLUB, Rank.FIVE)]
+        self.assertFalse(pair(non_pair))
+
+    def test_two_pair(self):
+        #Two pair with twos
+        two_pair_with_twos = [Card(Suit.DIAMOND, Rank.ACE), Card(Suit.CLUB, Rank.TWO), Card(Suit.CLUB, Rank.THREE), Card(Suit.CLUB, Rank.THREE), Card(Suit.CLUB, Rank.FIVE)]
+        self.assertTrue(two_pair(two_pair_with_twos))
+
+        #Two pair with no twos
+        two_pair_with_no_twos = [Card(Suit.DIAMOND, Rank.ACE), Card(Suit.CLUB, Rank.ACE), Card(Suit.CLUB, Rank.THREE), Card(Suit.CLUB, Rank.THREE), Card(Suit.CLUB, Rank.FIVE)]
+        self.assertTrue(two_pair(two_pair_with_no_twos))
+
+        #Single pair
+        single_pair = [Card(Suit.DIAMOND, Rank.ACE), Card(Suit.CLUB, Rank.TWO), Card(Suit.CLUB, Rank.THREE), Card(Suit.CLUB, Rank.SIX), Card(Suit.CLUB, Rank.FIVE)]
+        self.assertFalse(two_pair(single_pair))
+
+        #None matching
+        none_matching = [Card(Suit.DIAMOND, Rank.ACE), Card(Suit.CLUB, Rank.FOUR), Card(Suit.CLUB, Rank.THREE), Card(Suit.CLUB, Rank.SIX), Card(Suit.CLUB, Rank.FIVE)]
+        self.assertFalse(two_pair(none_matching))
+        
+    def test_three_of_a_kind(self):
+        #Three of a kind with twos
+        three_of_a_kind_with_twos = [Card(Suit.DIAMOND, Rank.ACE), Card(Suit.CLUB, Rank.TWO), Card(Suit.CLUB, Rank.ACE), Card(Suit.CLUB, Rank.THREE), Card(Suit.CLUB, Rank.FIVE)]
+        self.assertTrue(three_of_a_kind(three_of_a_kind_with_twos))
+
+        #Three of a kind with no twos
+        three_of_a_kind_with_no_twos = [Card(Suit.DIAMOND, Rank.ACE), Card(Suit.CLUB, Rank.ACE), Card(Suit.CLUB, Rank.ACE), Card(Suit.CLUB, Rank.THREE), Card(Suit.CLUB, Rank.FIVE)]
+        self.assertTrue(three_of_a_kind(three_of_a_kind_with_no_twos))
+
+        #None matching
+        non_pair = [Card(Suit.DIAMOND, Rank.ACE), Card(Suit.CLUB, Rank.FOUR), Card(Suit.CLUB, Rank.THREE), Card(Suit.CLUB, Rank.SIX), Card(Suit.CLUB, Rank.FIVE)]
+        self.assertFalse(three_of_a_kind(non_pair))
+
+    def test_four_of_a_kind(self):
+        #Four of a kind with twos
+        four_of_a_kind_with_twos = [Card(Suit.DIAMOND, Rank.ACE), Card(Suit.CLUB, Rank.TWO), Card(Suit.CLUB, Rank.ACE), Card(Suit.CLUB, Rank.TWO), Card(Suit.CLUB, Rank.FIVE)]
+        self.assertTrue(four_of_a_kind(four_of_a_kind_with_twos))
+
+        #Four of a kind with no twos
+        four_of_a_kind_with_no_twos = [Card(Suit.DIAMOND, Rank.ACE), Card(Suit.CLUB, Rank.ACE), Card(Suit.CLUB, Rank.ACE), Card(Suit.CLUB, Rank.ACE), Card(Suit.CLUB, Rank.FIVE)]
+        self.assertTrue(four_of_a_kind(four_of_a_kind_with_no_twos))
+
+        #None matching
+        non_pair = [Card(Suit.DIAMOND, Rank.ACE), Card(Suit.CLUB, Rank.FOUR), Card(Suit.CLUB, Rank.THREE), Card(Suit.CLUB, Rank.SIX), Card(Suit.CLUB, Rank.FIVE)]
+        self.assertFalse(four_of_a_kind(non_pair))
+
+    def test_five_of_a_kind(self):
+        #Five of a kind with twos
+        five_of_a_kind_with_twos = [Card(Suit.DIAMOND, Rank.ACE), Card(Suit.CLUB, Rank.TWO), Card(Suit.CLUB, Rank.ACE), Card(Suit.CLUB, Rank.TWO), Card(Suit.CLUB, Rank.ACE)]
+        self.assertTrue(five_of_a_kind(five_of_a_kind_with_twos))
+
+        #None matching
+        non_pair = [Card(Suit.DIAMOND, Rank.ACE), Card(Suit.CLUB, Rank.FOUR), Card(Suit.CLUB, Rank.THREE), Card(Suit.CLUB, Rank.SIX), Card(Suit.CLUB, Rank.FIVE)]
+        self.assertFalse(five_of_a_kind(non_pair))
 
 if __name__ == '__main__':
     unittest.main()
