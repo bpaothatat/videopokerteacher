@@ -10,30 +10,19 @@ def deuce_flush(hand:List[Card]) -> bool:
     return flush(without_deuces)
 
 def straight(hand:List[Card]) -> bool:
-    sorted_hand = sorted(hand, key=lambda card: card.rank.value)
-    for i in range(4):
-        current_rank = sorted_hand[i].rank.value
-        next_rank = sorted_hand[i + 1].rank.value
-        if not next_straight(current_rank, next_rank):
-            return False
-    return True
-
-def next_straight(current_rank, next_rank):
-    king_ace = current_rank == 1 and next_rank == 10
-    greater_by_one = current_rank + 1 == next_rank
-    return king_ace or greater_by_one
-
-def rank_count(hand:List[Card]) -> Dict:
-    dict = {}
-    counts = Counter(card.rank for card in hand)
-    twos = sum(map(lambda card : card.rank == Rank.TWO, hand))
-    for card in hand:
-        if card.rank not in dict.keys():
-            if card.rank is not Rank.TWO:
-                dict[card.rank] = counts[card.rank] + twos
-            else:
-                dict[card.rank] = twos
-    return dict
+    result = False
+    without_deuces = [card for card in hand if card.rank is not Rank.TWO]
+    sorted_hand = sorted(without_deuces, key=lambda card: card.rank.value)
+    if len(sorted_hand) > 1:
+        lowest = sorted_hand[0].rank.value
+        highest = sorted_hand[-1].rank.value
+        if highest == 14 and lowest <=5:
+            highest = sorted_hand[-2].rank.value
+            lowest = 1
+        result = highest - lowest <= 4
+    else:
+        result = True
+    return result
 
 def pair(hand:List[Card]) -> bool:
     return rank_kind(hand, 2, None)
@@ -59,3 +48,15 @@ def rank_kind(hand:List[Card], first_count:int, second_count:int) -> bool:
         return first_count in hand_count.values() and second_count in hand_count.values()
     else:
         return first_count in hand_count.values()
+
+def rank_count(hand:List[Card]) -> Dict:
+    dict = {}
+    counts = Counter(card.rank for card in hand)
+    twos = sum(map(lambda card : card.rank == Rank.TWO, hand))
+    for card in hand:
+        if card.rank not in dict.keys():
+            if card.rank is not Rank.TWO:
+                dict[card.rank] = counts[card.rank] + twos
+            else:
+                dict[card.rank] = twos
+    return dict

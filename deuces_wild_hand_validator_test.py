@@ -19,8 +19,8 @@ class DeucesWildTest(unittest.TestCase):
         self.assertFalse(deuce_flush(non_flush_hand))
 
     def test_straight(self):
-        #Royal straight
-        royal_straight = [Card(Suit.DIAMOND, Rank.ACE), Card(Suit.CLUB, Rank.KING), Card(Suit.CLUB, Rank.QUEEN), Card(Suit.CLUB, Rank.JACK), Card(Suit.CLUB, Rank.TEN)]
+        #Royal straight with deuces
+        royal_straight = [Card(Suit.DIAMOND, Rank.ACE), Card(Suit.CLUB, Rank.KING), Card(Suit.CLUB, Rank.TWO), Card(Suit.CLUB, Rank.JACK), Card(Suit.CLUB, Rank.TEN)]
         self.assertTrue(straight(royal_straight))
 
         #Random middle straight
