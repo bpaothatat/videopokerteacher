@@ -41,6 +41,9 @@ def straight(hand:List[Card]) -> bool:
         result = True
     return result
 
+def full_house(hand:List[Card]) -> bool:
+    return rank_kind(hand, 3, 2)
+
 def two_pair(hand:List[Card]) -> bool:
     return rank_kind(hand, 2, 2)
 
