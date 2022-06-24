@@ -55,22 +55,36 @@ def five_of_a_kind(hand:List[Card]) -> bool:
 
 def rank_kind(hand:List[Card], first_count:int, second_count:int) -> bool:
     hand_count = rank_count(hand)
-    if first_count == second_count:
-        counts = Counter(hand_count.values())
-        return counts[first_count] == 2
-    elif second_count is not None:
-        return first_count in hand_count.values() and second_count in hand_count.values()
-    else:
-        return first_count in hand_count.values()
+    available_twos = 0
+    if Rank.TWO in hand_count:
+        available_twos = hand_count.pop(Rank.TWO)
+    first, available_twos = check_rank_kind(hand_count, available_twos, first_count)
+    second = True
+    if second_count:
+        second, available_twos = check_rank_kind(hand_count, available_twos, second_count)
+    return first and second
 
 def rank_count(hand:List[Card]) -> Dict:
-    dict = {}
-    counts = Counter(card.rank for card in hand)
-    twos = sum(map(lambda card : card.rank == Rank.TWO, hand))
-    for card in hand:
-        if card.rank not in dict.keys():
-            if card.rank is not Rank.TWO:
-                dict[card.rank] = counts[card.rank] + twos
-            else:
-                dict[card.rank] = twos
-    return dict
+    ranks = [card.rank for card in hand]
+    return {rank:ranks.count(rank) for rank in ranks}
+
+def check_rank_kind(ranks:Dict[Rank, int], available_twos:int, expected_count:int) -> bool:
+    result = False
+    copy = ranks.copy()
+    for rank, count in copy.items():
+        if count == expected_count:
+            ranks.pop(rank)
+            result = True
+            break
+    
+    if not result:
+        for rank, count in copy.items():
+            if count + available_twos >= expected_count:
+                available_twos =  available_twos - (expected_count - count)
+                result = True
+                ranks.pop(rank)
+    return result, available_twos
+
+
+
+
