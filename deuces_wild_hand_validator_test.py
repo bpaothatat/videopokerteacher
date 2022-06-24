@@ -35,6 +35,19 @@ class DeucesWildTest(unittest.TestCase):
         non_straight = [Card(Suit.DIAMOND, Rank.ACE), Card(Suit.CLUB, Rank.TWO), Card(Suit.CLUB, Rank.THREE), Card(Suit.CLUB, Rank.SIX), Card(Suit.CLUB, Rank.FIVE)]
         self.assertFalse(straight(non_straight))
 
+    def test_full_house(self):
+        #Full house with twos
+        full_house_with_twos = [Card(Suit.DIAMOND, Rank.ACE), Card(Suit.CLUB, Rank.TWO), Card(Suit.CLUB, Rank.THREE), Card(Suit.SPADE, Rank.THREE), Card(Suit.DIAMOND, Rank.THREE)]
+        self.assertTrue(full_house(full_house_with_twos))
+
+        #Full house without twos
+        full_house_without_twos = [Card(Suit.DIAMOND, Rank.ACE), Card(Suit.CLUB, Rank.ACE), Card(Suit.CLUB, Rank.THREE), Card(Suit.SPADE, Rank.THREE), Card(Suit.DIAMOND, Rank.THREE)]
+        self.assertTrue(full_house(full_house_without_twos))
+
+        #Not full house
+        non_straight = [Card(Suit.DIAMOND, Rank.ACE), Card(Suit.CLUB, Rank.TWO), Card(Suit.CLUB, Rank.THREE), Card(Suit.CLUB, Rank.SIX), Card(Suit.CLUB, Rank.FIVE)]
+        self.assertFalse(full_house(non_straight))
+
     def test_two_pair(self):
         #Two pair with twos
         two_pair_with_twos = [Card(Suit.DIAMOND, Rank.ACE), Card(Suit.CLUB, Rank.TWO), Card(Suit.CLUB, Rank.THREE), Card(Suit.CLUB, Rank.THREE), Card(Suit.CLUB, Rank.FIVE)]
