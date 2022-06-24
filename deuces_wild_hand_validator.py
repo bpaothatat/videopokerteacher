@@ -1,13 +1,30 @@
+from turtle import st
 from cards import Card, Rank
 from collections import Counter
 from typing import Dict, List
 
-def flush(hand:List[Card]) -> bool:
-    return len(set([card.suit for card in hand])) == 1
+def four_deuces(hand:List[Card]) -> bool:
+    return len([card for card in hand if card.rank == Rank.TWO]) == 4
 
-def deuce_flush(hand:List[Card]) -> bool:
+def royal_flush_with_deuces(hand:List[Card]) -> bool:
+    ranks = [card.rank for card in hand]
+    return royal_flush(hand) and Rank.TWO in ranks 
+
+def royal_flush_without_deuces(hand:List[Card]) -> bool:
+    ranks = [card.rank for card in hand]
+    return royal_flush(hand) and Rank.TWO not in ranks 
+
+def royal_flush(hand:List[Card]) -> bool:
+    deuces_removed = [card for card in hand if card.rank is not Rank.TWO]
+    sorted_hand =  sorted(deuces_removed, key=lambda card: card.rank.value)
+    return straight_flush(hand) and sorted_hand[0].rank.value >= Rank.TEN.value
+
+def straight_flush(hand:List[Card]) -> bool:
+    return straight(hand) and flush(hand)
+
+def flush(hand:List[Card]) -> bool:
     without_deuces = [card for card in hand if card.rank is not Rank.TWO]
-    return flush(without_deuces)
+    return len(set([card.suit for card in without_deuces])) == 1
 
 def straight(hand:List[Card]) -> bool:
     result = False
@@ -23,9 +40,6 @@ def straight(hand:List[Card]) -> bool:
     else:
         result = True
     return result
-
-def pair(hand:List[Card]) -> bool:
-    return rank_kind(hand, 2, None)
 
 def two_pair(hand:List[Card]) -> bool:
     return rank_kind(hand, 2, 2)
