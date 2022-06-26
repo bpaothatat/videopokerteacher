@@ -60,3 +60,7 @@
 17. Keep Two to a Royal Flush (highest card Q)
 18. Keep Two to a Royal Flush (highest card K)
 19. Discard All Cards
+
+TODO
+- Implement prediction
+- Refactor hand validation 
