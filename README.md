@@ -64,3 +64,4 @@
 TODO
 - Implement prediction
 - Refactor hand validation 
+- Implement UI 
