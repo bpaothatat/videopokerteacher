@@ -35,6 +35,22 @@ class DeucesWildTest(unittest.TestCase):
         twos_twos_with_nothing = [Card(Suit.DIAMOND, Rank.TWO), Card(Suit.CLUB, Rank.TWO), Card(Suit.SPADE, Rank.THREE), Card(Suit.HEART, Rank.TEN), Card(Suit.DIAMOND, Rank.SEVEN)]
         self.assertTrue(validate_strategy([True, True, False, False, False], get_correct_hold_strategy(twos_twos_with_nothing)))
 
+    def test_one_deuces(self):
+        one_two_wild_flush = [Card(Suit.DIAMOND, Rank.TWO), Card(Suit.HEART, Rank.QUEEN), Card(Suit.HEART, Rank.TEN), Card(Suit.HEART, Rank.ACE), Card(Suit.HEART, Rank.KING)]
+        self.assertTrue(validate_strategy([True, True, True, True, True], get_correct_hold_strategy(one_two_wild_flush)))
+        
+        one_two_five_of_a_kind = [Card(Suit.DIAMOND, Rank.TWO), Card(Suit.CLUB, Rank.ACE), Card(Suit.DIAMOND, Rank.ACE), Card(Suit.HEART, Rank.ACE), Card(Suit.SPADE, Rank.ACE)]
+        self.assertTrue(validate_strategy([True, True, True, True, True], get_correct_hold_strategy(one_two_five_of_a_kind)))
+
+        one_two_stright_flush = [Card(Suit.DIAMOND, Rank.FIVE), Card(Suit.CLUB, Rank.TWO), Card(Suit.DIAMOND, Rank.ACE), Card(Suit.DIAMOND, Rank.THREE), Card(Suit.DIAMOND, Rank.FOUR)]
+        self.assertTrue(validate_strategy([True, True, True, True, True], get_correct_hold_strategy(one_two_stright_flush)))
+
+        one_two_four_of_a_kind = [Card(Suit.DIAMOND, Rank.ACE), Card(Suit.CLUB, Rank.TWO), Card(Suit.DIAMOND, Rank.FIVE), Card(Suit.HEART, Rank.ACE), Card(Suit.SPADE, Rank.ACE)]
+        self.assertTrue(validate_strategy([True, True, False, True, True], get_correct_hold_strategy(one_two_four_of_a_kind)))
+
+        one_two_with_nothing = [Card(Suit.DIAMOND, Rank.TWO), Card(Suit.CLUB, Rank.THREE), Card(Suit.SPADE, Rank.SIX), Card(Suit.HEART, Rank.TEN), Card(Suit.DIAMOND, Rank.SEVEN)]
+        self.assertTrue(validate_strategy([True, False, False, False, False], get_correct_hold_strategy(one_two_with_nothing)))
+
 
     def test_discard_all(self):
         four_twos = [Card(Suit.DIAMOND, Rank.ACE), Card(Suit.CLUB, Rank.SIX), Card(Suit.SPADE, Rank.FIVE), Card(Suit.HEART, Rank.TEN), Card(Suit.CLUB, Rank.JACK)]
