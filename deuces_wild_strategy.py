@@ -17,6 +17,14 @@ def get_correct_hold_strategy(hand:List[Card]):
             result = keep_all
         elif four_of_a_kind(hand):
             result = keep_four_of_a_kind(hand)
+            ##TODO: Rule 6
+        else:
+            result = keep_deuces(hand)
+    elif twos == 1:
+        if  royal_flush(hand) or five_of_a_kind(hand) or straight_flush(hand):
+            result = keep_all
+        elif four_of_a_kind(hand):
+            result = keep_four_of_a_kind(hand)
         else:
             result = keep_deuces(hand)
     return result
@@ -36,7 +44,6 @@ def keep_four_of_a_kind(hand:List[Card]):
     """
     rank = None
     hand_card_ranks = [card.rank for card in hand if card.rank is not Rank.TWO]
-    print(hand_card_ranks)
     card_count = {rank:hand_card_ranks.count(rank) for rank in hand_card_ranks}
     for card_rank, count in card_count.items():
         if count >= 2:
