@@ -17,6 +17,8 @@ def get_correct_hold_strategy(hand:List[Card]):
             result = keep_all
         elif four_of_a_kind(hand):
             result = keep_four_of_a_kind(hand)
+        elif four_to_royal_flush(hand, twos):
+            result = keep_four_to_royal_flush(hand, 2)
             ##TODO: Rule 6
         else:
             result = keep_deuces(hand)
@@ -25,11 +27,15 @@ def get_correct_hold_strategy(hand:List[Card]):
             result = keep_all
         elif four_of_a_kind(hand):
             result = keep_four_of_a_kind(hand)
+        elif four_to_royal_flush(hand, twos):
+            result = keep_four_to_royal_flush(hand)
         else:
             result = keep_deuces(hand)
     else:
         if royal_flush_without_deuces(hand) or straight_flush(hand):
             result = keep_all
+        elif four_to_royal_flush(hand, twos):
+            result = keep_four_to_royal_flush(hand)
     return result
 
 def two_counter(hand:List[Card]):
@@ -53,7 +59,20 @@ def keep_four_of_a_kind(hand:List[Card]):
             rank = card_rank
     return [True if card.rank == Rank.TWO or card.rank == rank else False for card in hand]
 
+def four_to_royal_flush(hand:List[Card], two_count:int):
+    result = False
+    suit = None
+    update_hand = hand_without_twos(hand)
+    suit_counts = suit_count(update_hand)
+    for acutal_suit, count in suit_counts.items():
+        if count + two_count is 4:
+            suit = acutal_suit
+    if suit:
+        result = len([card for card in hand if card.rank.value > Rank.NINE.value]) + two_count == 4
+    return result
 
+def keep_four_to_royal_flush(hand:List[Card]):
+    return [True if card.rank.value > Rank.NINE.value or card.rank is Rank.TWO else False for card in hand]
 
 def validate_strategy(held:List[bool], expected:List[bool]) -> bool:
     result = True
