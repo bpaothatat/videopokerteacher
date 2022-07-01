@@ -27,6 +27,9 @@ def get_correct_hold_strategy(hand:List[Card]):
             result = keep_four_of_a_kind(hand)
         else:
             result = keep_deuces(hand)
+    else:
+        if royal_flush_without_deuces(hand) or straight_flush(hand):
+            result = keep_all
     return result
 
 def two_counter(hand:List[Card]):
