@@ -1,6 +1,5 @@
 from turtle import st
 from cards import Card, Rank
-from collections import Counter
 from typing import Dict, List
 
 def four_deuces(hand:List[Card]) -> bool:
@@ -70,6 +69,13 @@ def rank_kind(hand:List[Card], first_count:int, second_count:int) -> bool:
 def rank_count(hand:List[Card]) -> Dict:
     ranks = [card.rank for card in hand]
     return {rank:ranks.count(rank) for rank in ranks}
+
+def suit_count(hand:List[Card]) -> Dict:
+    suits = [card.suit for card in hand]
+    return {suit:suits.count(suit) for suit in suits}
+
+def hand_without_twos(hand:List[Card]) -> List[Card]:
+    return [card for card in hand if card.rank is not Rank.TWO]
 
 def check_rank_kind(ranks:Dict[Rank, int], available_twos:int, expected_count:int) -> bool:
     result = False
