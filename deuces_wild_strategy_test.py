@@ -51,6 +51,18 @@ class DeucesWildTest(unittest.TestCase):
         one_two_with_nothing = [Card(Suit.DIAMOND, Rank.TWO), Card(Suit.CLUB, Rank.THREE), Card(Suit.SPADE, Rank.SIX), Card(Suit.HEART, Rank.TEN), Card(Suit.DIAMOND, Rank.SEVEN)]
         self.assertTrue(validate_strategy([True, False, False, False, False], get_correct_hold_strategy(one_two_with_nothing)))
 
+    def test_no_deuces(self):
+        no_twos_royal_flush = [Card(Suit.HEART, Rank.JACK), Card(Suit.HEART, Rank.QUEEN), Card(Suit.HEART, Rank.TEN), Card(Suit.HEART, Rank.ACE), Card(Suit.HEART, Rank.KING)]
+        self.assertTrue(validate_strategy([True, True, True, True, True], get_correct_hold_strategy(no_twos_royal_flush)))
+        
+        no_two_straight_flush = [Card(Suit.HEART, Rank.SIX), Card(Suit.HEART, Rank.SEVEN), Card(Suit.HEART, Rank.EIGHT), Card(Suit.HEART, Rank.NINE), Card(Suit.HEART, Rank.TEN)]
+        self.assertTrue(validate_strategy([True, True, True, True, True], get_correct_hold_strategy(no_two_straight_flush)))
+
+        one_two_with_nothing = [Card(Suit.DIAMOND, Rank.JACK), Card(Suit.CLUB, Rank.THREE), Card(Suit.SPADE, Rank.SIX), Card(Suit.HEART, Rank.TEN), Card(Suit.DIAMOND, Rank.SEVEN)]
+        self.assertTrue(validate_strategy([False, False, False, False, False], get_correct_hold_strategy(one_two_with_nothing)))
+
+
+
 
     def test_discard_all(self):
         four_twos = [Card(Suit.DIAMOND, Rank.ACE), Card(Suit.CLUB, Rank.SIX), Card(Suit.SPADE, Rank.FIVE), Card(Suit.HEART, Rank.TEN), Card(Suit.CLUB, Rank.JACK)]
