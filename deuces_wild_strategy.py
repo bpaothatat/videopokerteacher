@@ -1,10 +1,10 @@
-from cards import Card, Suit, Rank
+from cards import Card, Rank
 from deuces_wild_hand_validator import *
 
 def get_correct_hold_strategy(hand:List[Card]):
     keep_all = [True] * 5
     result = [False] * 5
-    twos = two_counter(hand)
+    twos = number_of_twos(hand)
     if twos == 4:
         result = keep_four_deuces(hand)
     elif twos == 3:
@@ -37,9 +37,6 @@ def get_correct_hold_strategy(hand:List[Card]):
         elif four_to_royal_flush(hand, twos):
             result = keep_four_to_royal_flush(hand)
     return result
-
-def two_counter(hand:List[Card]):
-    return len([card for card in hand if card.rank == Rank.TWO])
 
 def keep_deuces(hand:List[Card]):
     return [True if card.rank == Rank.TWO else None for card in hand]

@@ -1,34 +1,28 @@
-from turtle import st
 from cards import Card, Rank
 from typing import Dict, List
 
 def four_deuces(hand:List[Card]) -> bool:
-    return len([card for card in hand if card.rank == Rank.TWO]) == 4
+    return number_of_twos(hand) == 4
 
 def royal_flush_with_deuces(hand:List[Card]) -> bool:
-    ranks = [card.rank for card in hand]
-    return royal_flush(hand) and Rank.TWO in ranks 
+    return royal_flush(hand) and Rank.TWO in [card.rank for card in hand] 
 
 def royal_flush_without_deuces(hand:List[Card]) -> bool:
-    ranks = [card.rank for card in hand]
-    return royal_flush(hand) and Rank.TWO not in ranks 
+    return royal_flush(hand) and Rank.TWO not in [card.rank for card in hand] 
 
 def royal_flush(hand:List[Card]) -> bool:
-    deuces_removed = [card for card in hand if card.rank is not Rank.TWO]
-    sorted_hand =  sorted(deuces_removed, key=lambda card: card.rank.value)
+    sorted_hand =  sort_by_rank(hand_without_twos(hand))
     return straight_flush(hand) and sorted_hand[0].rank.value >= Rank.TEN.value
 
 def straight_flush(hand:List[Card]) -> bool:
     return straight(hand) and flush(hand)
 
 def flush(hand:List[Card]) -> bool:
-    without_deuces = [card for card in hand if card.rank is not Rank.TWO]
-    return len(set([card.suit for card in without_deuces])) == 1
+    return len(suit_count(hand_without_twos(hand)).keys()) == 1
 
 def straight(hand:List[Card]) -> bool:
     result = False
-    without_deuces = [card for card in hand if card.rank is not Rank.TWO]
-    sorted_hand = sorted(without_deuces, key=lambda card: card.rank.value)
+    sorted_hand = sort_by_rank(hand_without_twos(hand))
     if len(sorted_hand) > 1:
         lowest = sorted_hand[0].rank.value
         highest = sorted_hand[-1].rank.value
@@ -66,6 +60,9 @@ def rank_kind(hand:List[Card], first_count:int, second_count:int) -> bool:
         second, available_twos = check_rank_kind(hand_count, available_twos, second_count)
     return first and second
 
+def number_of_twos(hand:List[Card]):
+    return len([card for card in hand if card.rank == Rank.TWO])
+
 def rank_count(hand:List[Card]) -> Dict:
     ranks = [card.rank for card in hand]
     return {rank:ranks.count(rank) for rank in ranks}
@@ -76,6 +73,9 @@ def suit_count(hand:List[Card]) -> Dict:
 
 def hand_without_twos(hand:List[Card]) -> List[Card]:
     return [card for card in hand if card.rank is not Rank.TWO]
+
+def sort_by_rank(hand:List[Card]) -> List[Card]:
+    return sorted(hand, key=lambda card: card.rank.value)
 
 def check_rank_kind(ranks:Dict[Rank, int], available_twos:int, expected_count:int) -> bool:
     result = False
