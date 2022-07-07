@@ -32,7 +32,7 @@ def get_correct_hold_strategy(hand:List[Card]):
         elif full_house(hand):
             result = keep_all
         elif three_of_a_kind(hand):
-            result = keep_three_of_a_kind(hand)
+            result = keep_three_of_a_kind(hand, twos)
         elif straight(hand) or flush(hand):
             result = keep_all
         else:
@@ -49,13 +49,13 @@ def get_correct_hold_strategy(hand:List[Card]):
         elif full_house(hand):
             result = keep_all
         elif three_of_a_kind(hand):
-            result = keep_three_of_a_kind(hand)
+            result = keep_three_of_a_kind(hand, twos)
         elif straight(hand) or flush(hand):
             result = keep_all
     return result
 
 def keep_deuces(hand:List[Card])-> List[Card]:
-    return [True if card.rank == Rank.TWO else None for card in hand]
+    return [True if card.rank == Rank.TWO else False for card in hand]
 
 def keep_four_deuces(hand:List[Card])-> List[Card]:
     return [True if card.rank == Rank.TWO else None for card in hand]
