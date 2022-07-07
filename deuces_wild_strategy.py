@@ -1,9 +1,9 @@
 from cards import *
 from deuces_wild_hand_validator import *
 
-def get_correct_hold_strategy(hand:List[Card]):
-    keep_all = [True] * 5
-    result = [False] * 5
+def get_correct_hold_strategy(hand:List[Card]) -> List[List[bool]]:
+    keep_all = [[True] * 5]
+    result = [[False] * 5]
     twos = number_of_twos(hand)
     if twos == 4:
         result = keep_four_deuces(hand)
@@ -54,13 +54,13 @@ def get_correct_hold_strategy(hand:List[Card]):
             result = keep_all
     return result
 
-def keep_deuces(hand:List[Card])-> List[Card]:
-    return [True if card.rank == Rank.TWO else False for card in hand]
+def keep_deuces(hand:List[Card])-> List[List[bool]]:
+    return [[True if card.rank == Rank.TWO else False for card in hand]]
 
-def keep_four_deuces(hand:List[Card])-> List[Card]:
-    return [True if card.rank == Rank.TWO else None for card in hand]
+def keep_four_deuces(hand:List[Card])-> List[List[bool]]:
+    return [[True if card.rank == Rank.TWO else False for card in hand], [True] * 5]
 
-def keep_four_of_a_kind(hand:List[Card]) -> List[Card]:
+def keep_four_of_a_kind(hand:List[Card]) -> List[List[bool]]:
     """
     Used only for hands with 2 or less threes
     """
@@ -70,7 +70,17 @@ def keep_four_of_a_kind(hand:List[Card]) -> List[Card]:
     for card_rank, count in card_count.items():
         if count >= 2:
             rank = card_rank
-    return [True if card.rank == Rank.TWO or card.rank == rank else False for card in hand]
+    return [[True if card.rank == Rank.TWO or card.rank == rank else False for card in hand]]
+
+def keep_four_to_royal_flush(hand:List[Card]) -> List[List[bool]]:
+    return [[True if card.rank.value > Rank.NINE.value or card.rank is Rank.TWO else False for card in hand]]
+
+def keep_three_of_a_kind(hand:List[Card], two_count:int) -> List[List[bool]]:
+    rank_counts = rank_count(hand_without_twos(hand))
+    for actual_rank, count in rank_counts.items():
+        if count + two_count == 3:
+            result = [[True if card.rank is Rank.TWO or card.rank is actual_rank else False for card in hand]]
+    return result
 
 def four_to_royal_flush(hand:List[Card], two_count:int) -> bool:
     result = False
@@ -81,21 +91,4 @@ def four_to_royal_flush(hand:List[Card], two_count:int) -> bool:
             suit = acutal_suit
     if suit:
         result = len([card for card in hand if card.rank.value > Rank.NINE.value]) + two_count == 4
-    return result
-
-def keep_four_to_royal_flush(hand:List[Card]) -> List[Card]:
-    return [True if card.rank.value > Rank.NINE.value or card.rank is Rank.TWO else False for card in hand]
-
-def keep_three_of_a_kind(hand:List[Card], two_count:int) -> List[Card]:
-    rank_counts = rank_count(hand_without_twos(hand))
-    for actual_rank, count in rank_counts.items():
-        if count + two_count == 3:
-            result = [True if card.rank is Rank.TWO or card.rank is actual_rank else False for card in hand]
-    return result
-
-def validate_strategy(held:List[bool], expected:List[bool]) -> bool:
-    result = True
-    for i in range(len(expected)):
-        if expected[i] is not None:
-            result = result and held[i] == expected[i]
     return result
