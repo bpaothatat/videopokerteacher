@@ -1,6 +1,4 @@
-from pyclbr import readmodule
-import re
-from cards import Card, Rank
+from cards import *
 from deuces_wild_hand_validator import *
 
 def get_correct_hold_strategy(hand:List[Card]):
@@ -79,7 +77,7 @@ def four_to_royal_flush(hand:List[Card], two_count:int) -> bool:
     suit = None
     suit_counts = suit_count(hand_without_twos(hand))
     for acutal_suit, count in suit_counts.items():
-        if count + two_count is 4:
+        if count + two_count == 4:
             suit = acutal_suit
     if suit:
         result = len([card for card in hand if card.rank.value > Rank.NINE.value]) + two_count == 4
@@ -91,7 +89,7 @@ def keep_four_to_royal_flush(hand:List[Card]) -> List[Card]:
 def keep_three_of_a_kind(hand:List[Card], two_count:int) -> List[Card]:
     rank_counts = rank_count(hand_without_twos(hand))
     for actual_rank, count in rank_counts.items():
-        if count + two_count is 3:
+        if count + two_count == 3:
             result = [True if card.rank is Rank.TWO or card.rank is actual_rank else False for card in hand]
     return result
 
