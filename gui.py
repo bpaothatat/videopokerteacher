@@ -1,3 +1,5 @@
+from cards import *
+from deck import Deck
 from tkinter import *
 
 root = Tk()
@@ -9,6 +11,8 @@ game_frame = Frame(root, bg = "green")
 game_frame.pack(pady=20)
 
 new_hand = True
+deck = Deck()
+hand = None
 
 first_card_frame = LabelFrame(game_frame, text="First Card", bd=0)
 first_card_frame.grid(row=0, column=0, padx=10, ipadx=10)
@@ -64,11 +68,17 @@ def deal():
     global new_hand
     if new_hand:
         new_hand = False
+        hand = deck.deal_hand()
         first_card_hold.grid_remove()
         second_card_hold.grid_remove()
         third_card_hold.grid_remove()
         fourth_card_hold.grid_remove()
         fifth_card_hold.grid_remove()
+        first_card.config(text= hand[0].rank.name + ' of ' + hand[0].suit.name)
+        second_card.config(text= hand[1].rank.name + ' of ' + hand[1].suit.name)
+        third_card.config(text= hand[2].rank.name + ' of ' + hand[2].suit.name)
+        fourth_card.config(text= hand[3].rank.name + ' of ' + hand[3].suit.name)
+        fifth_card.config(text= hand[4].rank.name + ' of ' + hand[4].suit.name)
     else:
         new_hand = True
         first_card_hold.grid()
@@ -76,6 +86,7 @@ def deal():
         third_card_hold.grid()
         fourth_card_hold.grid()
         fifth_card_hold.grid()
+        deck.reset()
         
 deal_button = Button(game_frame, text="Deal", command=deal)
 deal_button.grid(row=2, column=2, padx=20, pady=20)
