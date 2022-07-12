@@ -1,5 +1,5 @@
 from cards import *
-from deck import Deck
+from deck import *
 from tkinter import *
 
 root = Tk()
@@ -10,7 +10,7 @@ root.configure(background="green")
 game_frame = Frame(root, bg = "green")
 game_frame.pack(pady=20)
 
-new_hand = True
+hand_state = HandState.NEW_HAND
 deck = Deck()
 hand = None
 
@@ -44,48 +44,68 @@ fifth_card_frame.grid(row=0, column=4, padx=10, ipadx=10)
 fifth_card = Label(fifth_card_frame, text='Four of Diamonds')
 fifth_card.pack(padx=20)
 
-first_card_hold = Button(game_frame, text='Hold')
+class HoldButton(Button):
+    def __init__(self, frame, *args, **kwargs):
+        super().__init__(frame, text='Hold', command=self.switchButtonState, *args, **kwargs)
+        self._hold = False
+
+    def switchButtonState(self):
+        if not self._hold:
+            self._hold = True
+        else:
+            self._hold = False
+        print(self._hold)
+        
+    def isHold(self):
+        return self._hold
+        
+first_card_hold = HoldButton(game_frame)
 first_card_hold.grid(row=1, column=0, padx=10, ipadx=10, pady=10)
 first_card_hold.grid_remove()
 
-second_card_hold = Button(game_frame, text='Hold')
+second_card_hold = HoldButton(game_frame)
 second_card_hold.grid(row=1, column=1, padx=10, ipadx=10, pady=10)
 second_card_hold.grid_remove()
 
-third_card_hold = Button(game_frame, text='Hold')
+third_card_hold = HoldButton(game_frame)
 third_card_hold.grid(row=1, column=2, padx=10, ipadx=10, pady=10)
 third_card_hold.grid_remove()
 
-fourth_card_hold = Button(game_frame, text='Hold')
+fourth_card_hold = HoldButton(game_frame)
 fourth_card_hold.grid(row=1, column=3, padx=10, ipadx=10, pady=10)
 fourth_card_hold.grid_remove()
 
-fifth_card_hold = Button(game_frame, text='Hold')
+fifth_card_hold = HoldButton(game_frame)
 fifth_card_hold.grid(row=1, column=4, padx=10, ipadx=10, pady=10)
 fifth_card_hold.grid_remove()
 
+def display_hand():
+    first_card.config(text= hand[0].rank.name + ' of ' + hand[0].suit.name)
+    second_card.config(text= hand[1].rank.name + ' of ' + hand[1].suit.name)
+    third_card.config(text= hand[2].rank.name + ' of ' + hand[2].suit.name)
+    fourth_card.config(text= hand[3].rank.name + ' of ' + hand[3].suit.name)
+    fifth_card.config(text= hand[4].rank.name + ' of ' + hand[4].suit.name)
+
 def deal():
-    global new_hand
-    if new_hand:
-        new_hand = False
+    global hand_state, hand, deck
+    if hand_state is HandState.NEW_HAND:
+        hand_state = HandState.DEALT
         hand = deck.deal_hand()
-        first_card_hold.grid_remove()
-        second_card_hold.grid_remove()
-        third_card_hold.grid_remove()
-        fourth_card_hold.grid_remove()
-        fifth_card_hold.grid_remove()
-        first_card.config(text= hand[0].rank.name + ' of ' + hand[0].suit.name)
-        second_card.config(text= hand[1].rank.name + ' of ' + hand[1].suit.name)
-        third_card.config(text= hand[2].rank.name + ' of ' + hand[2].suit.name)
-        fourth_card.config(text= hand[3].rank.name + ' of ' + hand[3].suit.name)
-        fifth_card.config(text= hand[4].rank.name + ' of ' + hand[4].suit.name)
-    else:
-        new_hand = True
         first_card_hold.grid()
         second_card_hold.grid()
         third_card_hold.grid()
         fourth_card_hold.grid()
         fifth_card_hold.grid()
+        display_hand()
+    else:
+        hand_state = HandState.NEW_HAND
+        deck.redeal_hand(hand, [False, False, True, True, True])
+        display_hand()
+        first_card_hold.grid_remove()
+        second_card_hold.grid_remove()
+        third_card_hold.grid_remove()
+        fourth_card_hold.grid_remove()
+        fifth_card_hold.grid_remove()
         deck.reset()
         
 deal_button = Button(game_frame, text="Deal", command=deal)
