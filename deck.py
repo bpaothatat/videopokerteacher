@@ -31,3 +31,7 @@ class Deck:
 
     def reset(self) -> None:
         self.dealt = []
+
+class HandState:
+    NEW_HAND = 0
+    DEALT = 1
