@@ -54,8 +54,7 @@ class HoldButton(Button):
             self._hold = True
         else:
             self._hold = False
-        print(self._hold)
-        
+
     def isHold(self):
         return self._hold
         
@@ -86,6 +85,9 @@ def display_hand():
     fourth_card.config(text= hand[3].rank.name + ' of ' + hand[3].suit.name)
     fifth_card.config(text= hand[4].rank.name + ' of ' + hand[4].suit.name)
 
+def getHandHoldStatus():
+    return [first_card_hold.isHold(), second_card_hold.isHold(), third_card_hold.isHold(), fourth_card_hold.isHold(), fifth_card_hold.isHold()]
+
 def deal():
     global hand_state, hand, deck
     if hand_state is HandState.NEW_HAND:
@@ -99,7 +101,7 @@ def deal():
         display_hand()
     else:
         hand_state = HandState.NEW_HAND
-        deck.redeal_hand(hand, [False, False, True, True, True])
+        deck.redeal_hand(hand, getHandHoldStatus())
         display_hand()
         first_card_hold.grid_remove()
         second_card_hold.grid_remove()
