@@ -65,3 +65,8 @@
 TODO
 - Implement prediction
 - Implement UI 
+    - Add card images 
+    - Add visual effect for held cards
+    - Add end of hand status
+        - Link deuce hand validator (Display in simple label)
+        - Create UI for above funtionality 
