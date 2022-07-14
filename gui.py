@@ -14,39 +14,36 @@ hand_state = HandState.NEW_HAND
 deck = Deck()
 hand = None
 
-first_card_frame = LabelFrame(game_frame, text="First Card", bd=0)
-first_card_frame.grid(row=0, column=0, padx=10, ipadx=10)
+class CardFrame(LabelFrame):
+     def __init__(self, frame, frame_name, column, *args, **kwargs):
+        super().__init__(frame, text=frame_name, bd=0)
+        self.grid(row=0, column=column, padx=10, ipadx=10)
 
-first_card = Label(first_card_frame, text='Two of Clubs')
-first_card.pack(padx=20)
+class CardLabel(Label):
+    def __init__(self, card_frame, card, *args, **kwargs):
+        super().__init__(card_frame, text=card)
+        self.grid(padx=20)
 
-second_card_frame = LabelFrame(game_frame, text="Second Card", bd=0)
-second_card_frame.grid(row=0, column=1, padx=10, ipadx=10)
+first_card_frame = CardFrame(game_frame, "First Card", 0)
+first_card = CardLabel(first_card_frame, 'Two of Clubs')
 
-second_card = Label(second_card_frame, text='Ace of Diamonds')
-second_card.pack(padx=20)
+second_card_frame = CardFrame(game_frame, "Second Card", 1)
+second_card = CardLabel(second_card_frame, 'Ace of Diamonds')
 
-third_card_frame = LabelFrame(game_frame, text="Third Card", bd=0)
-third_card_frame.grid(row=0, column=2, padx=10, ipadx=10)
+third_card_frame = CardFrame(game_frame, "Third Card", 2)
+third_card = CardLabel(third_card_frame,'Two of Diamonds')
 
-third_card = Label(third_card_frame, text='Two of Diamonds')
-third_card.pack(padx=20)
+fourth_card_frame = CardFrame(game_frame, "Fourth Card", 3)
+fourth_card = CardLabel(fourth_card_frame, 'Three of Diamonds')
 
-fourth_card_frame = LabelFrame(game_frame, text="Fourth Card", bd=0)
-fourth_card_frame.grid(row=0, column=3, padx=10, ipadx=10)
-
-fourth_card = Label(fourth_card_frame, text='Three of Diamonds')
-fourth_card.pack(padx=20)
-
-fifth_card_frame = LabelFrame(game_frame, text="Fifth Card", bd=0)
-fifth_card_frame.grid(row=0, column=4, padx=10, ipadx=10)
-
-fifth_card = Label(fifth_card_frame, text='Four of Diamonds')
-fifth_card.pack(padx=20)
+fifth_card_frame = CardFrame(game_frame, "Fifth Card", 4)
+fifth_card = CardLabel(fifth_card_frame, 'Four of Diamonds')
 
 class HoldButton(Button):
-    def __init__(self, frame, *args, **kwargs):
+    def __init__(self, frame, column, *args, **kwargs):
         super().__init__(frame, text='Hold', command=self.switchButtonState, *args, **kwargs)
+        self.grid(row=1, column=column, padx=10, ipadx=10, pady=10)
+        self.grid_remove()
         self._hold = False
 
     def switchButtonState(self):
@@ -58,25 +55,11 @@ class HoldButton(Button):
     def isHold(self):
         return self._hold
         
-first_card_hold = HoldButton(game_frame)
-first_card_hold.grid(row=1, column=0, padx=10, ipadx=10, pady=10)
-first_card_hold.grid_remove()
-
-second_card_hold = HoldButton(game_frame)
-second_card_hold.grid(row=1, column=1, padx=10, ipadx=10, pady=10)
-second_card_hold.grid_remove()
-
-third_card_hold = HoldButton(game_frame)
-third_card_hold.grid(row=1, column=2, padx=10, ipadx=10, pady=10)
-third_card_hold.grid_remove()
-
-fourth_card_hold = HoldButton(game_frame)
-fourth_card_hold.grid(row=1, column=3, padx=10, ipadx=10, pady=10)
-fourth_card_hold.grid_remove()
-
-fifth_card_hold = HoldButton(game_frame)
-fifth_card_hold.grid(row=1, column=4, padx=10, ipadx=10, pady=10)
-fifth_card_hold.grid_remove()
+first_card_hold = HoldButton(game_frame, 0)
+second_card_hold = HoldButton(game_frame, 1)
+third_card_hold = HoldButton(game_frame, 2)
+fourth_card_hold = HoldButton(game_frame, 3)
+fifth_card_hold = HoldButton(game_frame, 4)
 
 def display_hand():
     first_card.config(text= hand[0].rank.name + ' of ' + hand[0].suit.name)
