@@ -1,5 +1,43 @@
 from cards import Card, Rank
 from typing import Dict, List
+from enum import Enum
+
+class Hand(Enum):
+    NOTHING = 0
+    THREE_OF_A_KIND = 1
+    STRAIGHT = 2
+    FLUSH = 2
+    FULL_HOUSE = 3
+    FOUR_OF_A_KIND = 5
+    STRIGHT_FLUSH = 9
+    FIVE_OF_A_KIND = 15
+    WILD_ROYAL_FLUSH = 25
+    FOUR_DEUCES = 200
+    NATURAL_ROYAL_FLUSH = 800
+
+def hand_evaluator(hand:List[Card]) -> Hand:
+    hand_value = Hand.NOTHING
+    if royal_flush_without_deuces(hand):
+        hand_value = Hand.NATURAL_ROYAL_FLUSH
+    elif four_deuces(hand):
+        hand_value = Hand.FOUR_DEUCES
+    elif royal_flush_with_deuces(hand):
+        hand_value = Hand.WILD_ROYAL_FLUSH
+    elif five_of_a_kind(hand):
+        hand_value = Hand.FIVE_OF_A_KIND
+    elif straight_flush(hand):
+        hand_value = Hand.STRIGHT_FLUSH
+    elif four_of_a_kind(hand):
+        hand_value = Hand.FOUR_OF_A_KIND
+    elif full_house(hand):
+        hand_value = Hand.FULL_HOUSE
+    elif flush(hand):
+        hand = Hand.FLUSH
+    elif straight(hand):
+        hand_value = Hand.STRAIGHT
+    elif three_of_a_kind(hand):
+        hand_value = Hand.THREE_OF_A_KIND
+    return hand_value
 
 def four_deuces(hand:List[Card]) -> bool:
     return number_of_twos(hand) == 4
