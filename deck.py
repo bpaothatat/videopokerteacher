@@ -1,6 +1,7 @@
 from cards import Card, Suit, Rank
 from random import randrange
 from typing import List
+from enum import Enum
 
 class Deck:
     def __init__(self) -> None:
@@ -32,6 +33,6 @@ class Deck:
     def reset(self) -> None:
         self.dealt = []
 
-class HandState:
+class HandState(Enum):
     NEW_HAND = 0
     DEALT = 1
