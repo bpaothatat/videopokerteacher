@@ -1,4 +1,5 @@
 from cards import *
+from deuces_wild_hand_validator import hand_evaluator
 from deck import *
 from tkinter import *
 
@@ -12,7 +13,7 @@ game_frame.pack(pady=20)
 
 hand_state = HandState.NEW_HAND
 deck = Deck()
-hand = None
+hand = []
 
 class CardFrame(LabelFrame):
      def __init__(self, frame, frame_name, column, *args, **kwargs):
@@ -38,6 +39,10 @@ fourth_card = CardLabel(fourth_card_frame, 'Three of Diamonds')
 
 fifth_card_frame = CardFrame(game_frame, "Fifth Card", 4)
 fifth_card = CardLabel(fifth_card_frame, 'Four of Diamonds')
+
+hand_evaluation_label = Label(game_frame, text="Pending")
+hand_evaluation_label.grid(row=2, column=2, padx=20, pady=20)
+hand_evaluation_label.grid_remove()
 
 class HoldButton(Button):
     def __init__(self, frame, column, *args, **kwargs):
@@ -81,6 +86,7 @@ def deal():
         third_card_hold.grid()
         fourth_card_hold.grid()
         fifth_card_hold.grid()
+        hand_evaluation_label.grid_remove()
         display_hand()
     else:
         hand_state = HandState.NEW_HAND
@@ -91,9 +97,11 @@ def deal():
         third_card_hold.grid_remove()
         fourth_card_hold.grid_remove()
         fifth_card_hold.grid_remove()
+        hand_evaluation_label.config(text=hand_evaluator(hand).name)
+        hand_evaluation_label.grid()
         deck.reset()
         
 deal_button = Button(game_frame, text="Deal", command=deal)
-deal_button.grid(row=2, column=2, padx=20, pady=20)
+deal_button.grid(row=3, column=2, padx=20, pady=20)
 
 root.mainloop()
