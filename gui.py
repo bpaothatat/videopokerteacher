@@ -1,102 +1,100 @@
+from tkinter.ttk import Style
 from cards import *
 from deuces_wild_hand_validator import hand_evaluator
 from deck import *
 from tkinter import *
 
 root = Tk()
+style = Style()
 root.title("Deuces Wild")
 root.geometry("1200x800")
 root.configure(background="green")
 
 game_frame = Frame(root, bg = "green")
-game_frame.pack(pady=20)
+game_frame.grid(pady=20)
 
 hand_state = HandState.NEW_HAND
 deck = Deck()
 hand = []
 
-class CardFrame(LabelFrame):
-     def __init__(self, frame, frame_name, column, *args, **kwargs):
-        super().__init__(frame, text=frame_name, bd=0)
-        self.grid(row=0, column=column, padx=10, ipadx=10)
+class CardDisplay(object):
+    def __init__(self, frame:Frame, position:int, card:Card) -> None:
+        self.label_frame = LabelFrame(frame, text= 'Position', bd=0)
+        self.label_frame.grid(row=0, column=position, padx=10, ipadx=10)
 
-class CardLabel(Label):
-    def __init__(self, card_frame, card, *args, **kwargs):
-        super().__init__(card_frame, text=card)
-        self.grid(padx=20)
+        self.card_label = Label(self.label_frame, text=card.rank.name + ' of ' + card.suit.name)
+        self.card_label.grid(padx=15)
 
-first_card_frame = CardFrame(game_frame, "First Card", 0)
-first_card = CardLabel(first_card_frame, 'Two of Clubs')
+        self._hold = False
+        self.hold_button = Button(game_frame, text='Hold', command=self.switchButtonState)
+        self.hold_button.grid(row=1, column=position, padx=10, ipadx=10, pady=10)
+        self.hold_button.grid_remove()
 
-second_card_frame = CardFrame(game_frame, "Second Card", 1)
-second_card = CardLabel(second_card_frame, 'Ace of Diamonds')
+    def switchButtonState(self):
+        if not self._hold:
+            self._hold = True
+            self.label_frame.config(highlightbackground='red', highlightthickness=2)
+        else:
+            self._hold = False
+            self.label_frame.configure(highlightthickness=0)
 
-third_card_frame = CardFrame(game_frame, "Third Card", 2)
-third_card = CardLabel(third_card_frame,'Two of Diamonds')
+    def setCard(self, card:Card):
+        self.card_label.config(text=card.rank.name + ' of ' + card.suit.name)
 
-fourth_card_frame = CardFrame(game_frame, "Fourth Card", 3)
-fourth_card = CardLabel(fourth_card_frame, 'Three of Diamonds')
+    def displayHold(self):
+        self.hold_button.grid()
 
-fifth_card_frame = CardFrame(game_frame, "Fifth Card", 4)
-fifth_card = CardLabel(fifth_card_frame, 'Four of Diamonds')
+    def hideHold(self):
+        self.hold_button.grid_remove()
+
+    def remove_hold_boarder(self):
+        self.label_frame.config(highlightthickness=0)
+
+    def isHold(self):
+        return self._hold
+        
+first_card = CardDisplay(game_frame, 0, Card(Suit.DIAMOND, Rank.TWO))
+second_card = CardDisplay(game_frame, 1, Card(Suit.DIAMOND, Rank.ACE))
+third_card = CardDisplay(game_frame, 2, Card(Suit.DIAMOND, Rank.THREE))
+fourth_card = CardDisplay(game_frame, 3, Card(Suit.DIAMOND, Rank.FOUR))
+fifth_card = CardDisplay(game_frame, 4, Card(Suit.DIAMOND, Rank.FIVE))
+
+hand_display = [first_card, second_card, third_card, fourth_card, fifth_card]
 
 hand_evaluation_label = Label(game_frame, text="Pending")
 hand_evaluation_label.grid(row=2, column=2, padx=20, pady=20)
 hand_evaluation_label.grid_remove()
 
-class HoldButton(Button):
-    def __init__(self, frame, column, *args, **kwargs):
-        super().__init__(frame, text='Hold', command=self.switchButtonState, *args, **kwargs)
-        self.grid(row=1, column=column, padx=10, ipadx=10, pady=10)
-        self.grid_remove()
-        self._hold = False
+def getHandHoldStatus():
+    return [card.isHold() for card in hand_display]
 
-    def switchButtonState(self):
-        if not self._hold:
-            self._hold = True
-        else:
-            self._hold = False
+def hide_hold_buttons():
+    [card.hideHold() for card in hand_display]
 
-    def isHold(self):
-        return self._hold
-        
-first_card_hold = HoldButton(game_frame, 0)
-second_card_hold = HoldButton(game_frame, 1)
-third_card_hold = HoldButton(game_frame, 2)
-fourth_card_hold = HoldButton(game_frame, 3)
-fifth_card_hold = HoldButton(game_frame, 4)
+def display_hold_buttons():
+    [card.displayHold() for card in hand_display]
+
+def remove_board():
+    [card.remove_hold_boarder() for card in hand_display]
 
 def display_hand():
-    first_card.config(text= hand[0].rank.name + ' of ' + hand[0].suit.name)
-    second_card.config(text= hand[1].rank.name + ' of ' + hand[1].suit.name)
-    third_card.config(text= hand[2].rank.name + ' of ' + hand[2].suit.name)
-    fourth_card.config(text= hand[3].rank.name + ' of ' + hand[3].suit.name)
-    fifth_card.config(text= hand[4].rank.name + ' of ' + hand[4].suit.name)
-
-def getHandHoldStatus():
-    return [first_card_hold.isHold(), second_card_hold.isHold(), third_card_hold.isHold(), fourth_card_hold.isHold(), fifth_card_hold.isHold()]
+    global hand, deck, hand_display
+    deck.redeal_hand(hand, getHandHoldStatus())
+    [card.setCard(hand[index]) for index, card in enumerate(hand_display)]
 
 def deal():
-    global hand_state, hand, deck
+    global hand_state, deck, hand
     if hand_state is HandState.NEW_HAND:
         hand_state = HandState.DEALT
         hand = deck.deal_hand()
-        first_card_hold.grid()
-        second_card_hold.grid()
-        third_card_hold.grid()
-        fourth_card_hold.grid()
-        fifth_card_hold.grid()
-        hand_evaluation_label.grid_remove()
         display_hand()
+        display_hold_buttons()
+        hand_evaluation_label.grid_remove()
     else:
         hand_state = HandState.NEW_HAND
-        deck.redeal_hand(hand, getHandHoldStatus())
         display_hand()
-        first_card_hold.grid_remove()
-        second_card_hold.grid_remove()
-        third_card_hold.grid_remove()
-        fourth_card_hold.grid_remove()
-        fifth_card_hold.grid_remove()
+        hide_hold_buttons()
+        remove_board()
         hand_evaluation_label.config(text=hand_evaluator(hand).name)
         hand_evaluation_label.grid()
         deck.reset()
