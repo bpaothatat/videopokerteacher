@@ -64,6 +64,7 @@
 
 TODO
 - Implement prediction
+- Hand simulator to help with predictive calls
 - Implement UI 
     - Add card images 
     - Add end of hand status
