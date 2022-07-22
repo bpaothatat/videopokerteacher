@@ -16,6 +16,7 @@ class Hand(Enum):
     NATURAL_ROYAL_FLUSH = 800
 
 def hand_evaluator(hand:List[Card]) -> Hand:
+    print([card.rank.name + ' of ' + card.suit.name for card in hand])
     hand_value = Hand.NOTHING
     if royal_flush_without_deuces(hand):
         hand_value = Hand.NATURAL_ROYAL_FLUSH
@@ -58,18 +59,20 @@ def straight_flush(hand:List[Card]) -> bool:
 def flush(hand:List[Card]) -> bool:
     return len(suit_count(hand_without_twos(hand)).keys()) == 1
 
+# TODO: Fix Straight
 def straight(hand:List[Card]) -> bool:
-    result = False
+    result = True
     sorted_hand = sort_by_rank(hand_without_twos(hand))
-    if len(sorted_hand) > 1:
-        lowest = sorted_hand[0].rank.value
-        highest = sorted_hand[-1].rank.value
-        if highest == 14 and lowest <=5:
-            highest = sorted_hand[-2].rank.value
-            lowest = 1
-        result = highest - lowest <= 4
-    else:
-        result = True
+    available_twos = number_of_twos(hand)
+    for i in range(len(sorted_hand) - 1):
+        if sorted_hand[i].rank.value + 1 != sorted_hand[i + 1].rank.value:
+            if not (sorted_hand[i + 1].rank.value == 14 and available_twos == 1):
+                difference = sorted_hand[i + 1].rank.value - sorted_hand[i].rank.value - 1 
+                if available_twos >= difference:
+                    available_twos = available_twos - difference
+                else: 
+                    result = False
+                    break
     return result
 
 def full_house(hand:List[Card]) -> bool:
