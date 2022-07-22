@@ -3,6 +3,7 @@ from cards import *
 from deuces_wild_hand_validator import hand_evaluator
 from deck import *
 from tkinter import *
+from PIL import Image, ImageTk
 
 root = Tk()
 style = Style()
@@ -19,39 +20,53 @@ hand = []
 
 class CardDisplay(object):
     def __init__(self, frame:Frame, position:int, card:Card) -> None:
-        self.label_frame = LabelFrame(frame, text= 'Position', bd=0)
-        self.label_frame.grid(row=0, column=position, padx=10, ipadx=10)
+        self.label_frame = LabelFrame(frame, bd=0, background='green')
+        self.label_frame.grid(row=0, column=position, padx=10, pady=10, ipadx=0, ipady=0)
 
-        self.card_label = Label(self.label_frame, text=card.rank.name + ' of ' + card.suit.name)
-        self.card_label.grid(padx=15)
+        self.card_label = Label(self.label_frame)
+        self.set_card_image(card)
+        self.card_label.grid(padx=0, pady=0, ipadx=0, ipady=0)
 
-        self._hold = False
-        self.hold_button = Button(game_frame, text='Hold', command=self.switchButtonState)
+        self.hold = False
+        self.hold_button = Button(game_frame, text='Hold', command=self.switch_button_state)
         self.hold_button.grid(row=1, column=position, padx=10, ipadx=10, pady=10)
         self.hold_button.grid_remove()
 
-    def switchButtonState(self):
-        if not self._hold:
-            self._hold = True
+    def switch_button_state(self):
+        if not self.hold:
+            self.hold = True
             self.label_frame.config(highlightbackground='red', highlightthickness=2)
         else:
-            self._hold = False
+            self.hold = False
             self.label_frame.configure(highlightthickness=0)
 
-    def setCard(self, card:Card):
-        self.card_label.config(text=card.rank.name + ' of ' + card.suit.name)
-
-    def displayHold(self):
+    def display_hold(self):
         self.hold_button.grid()
 
-    def hideHold(self):
+    def hide_hold(self):
         self.hold_button.grid_remove()
 
     def remove_hold_boarder(self):
         self.label_frame.config(highlightthickness=0)
 
-    def isHold(self):
-        return self._hold
+    def is_hold(self):
+        return self.hold
+    
+    def remove_hold(self):
+        self.hold = False
+
+    def set_card_image(self, card:Card):
+        image = Image.open(self.image_file_path(card))
+        image = image.resize((200, 500))
+        photo_image = ImageTk.PhotoImage(image)
+        self.card_label.config(image=photo_image)
+        self.card_label.image = photo_image
+
+    def image_file_path(self,card:Card):
+        card_name = card.rank.name.lower() + '_of_' + card.suit.name.lower() + 's.png'
+        if card.rank.value <= 10:
+            card_name = str(card.rank.value) + '_of_' + card.suit.name.lower() + 's.png'
+        return "./images/" + card_name
         
 first_card = CardDisplay(game_frame, 0, Card(Suit.DIAMOND, Rank.TWO))
 second_card = CardDisplay(game_frame, 1, Card(Suit.DIAMOND, Rank.ACE))
@@ -65,22 +80,23 @@ hand_evaluation_label = Label(game_frame, text="Pending")
 hand_evaluation_label.grid(row=2, column=2, padx=20, pady=20)
 hand_evaluation_label.grid_remove()
 
-def getHandHoldStatus():
-    return [card.isHold() for card in hand_display]
+def get_hand_hold_status():
+    return [card.is_hold() for card in hand_display]
 
-def hide_hold_buttons():
-    [card.hideHold() for card in hand_display]
+def reset_holds():
+    [card.hide_hold() for card in hand_display]
+    [card.remove_hold() for card in hand_display]
 
 def display_hold_buttons():
-    [card.displayHold() for card in hand_display]
+    [card.display_hold() for card in hand_display]
 
 def remove_board():
     [card.remove_hold_boarder() for card in hand_display]
 
 def display_hand():
     global hand, deck, hand_display
-    deck.redeal_hand(hand, getHandHoldStatus())
-    [card.setCard(hand[index]) for index, card in enumerate(hand_display)]
+    deck.redeal_hand(hand, get_hand_hold_status())
+    [card.set_card_image(hand[index]) for index, card in enumerate(hand_display)]
 
 def deal():
     global hand_state, deck, hand
@@ -93,7 +109,7 @@ def deal():
     else:
         hand_state = HandState.NEW_HAND
         display_hand()
-        hide_hold_buttons()
+        reset_holds()
         remove_board()
         hand_evaluation_label.config(text=hand_evaluator(hand).name)
         hand_evaluation_label.grid()
