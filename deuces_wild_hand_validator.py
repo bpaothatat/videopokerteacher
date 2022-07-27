@@ -33,7 +33,7 @@ def hand_evaluator(hand:List[Card]) -> Hand:
     elif full_house(hand):
         hand_value = Hand.FULL_HOUSE
     elif flush(hand):
-        hand = Hand.FLUSH
+        hand_value = Hand.FLUSH
     elif straight(hand):
         hand_value = Hand.STRAIGHT
     elif three_of_a_kind(hand):
