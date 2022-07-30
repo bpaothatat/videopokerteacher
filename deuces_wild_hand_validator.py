@@ -59,7 +59,6 @@ def straight_flush(hand:List[Card]) -> bool:
 def flush(hand:List[Card]) -> bool:
     return len(suit_count(hand_without_twos(hand)).keys()) == 1
 
-# TODO: Fix Straight
 def straight(hand:List[Card]) -> bool:
     result = True
     sorted_hand = sort_by_rank(hand_without_twos(hand))
